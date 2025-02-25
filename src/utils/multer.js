@@ -1,0 +1,17 @@
+import multer from 'multer';
+import { AppError } from './AppError.js';
+export const fileMimeTypes = {
+    image: ['image/png', 'image/jpeg', 'image/gif', 'image/ico', 'image/svg+xml'],
+}
+export function fileUpload(customTypes = []) {
+    const storage = multer.diskStorage({});
+    function fileFilter(req, file, cb) {
+        if (customTypes.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new AppError("Invalid file format", 400), false);
+        }
+    }
+    const upload = multer({ fileFilter, storage });
+    return upload;
+}
