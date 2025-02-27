@@ -1,14 +1,24 @@
 
 import Joi from 'joi';
 export const generalFields = {
-    id: Joi.string().hex().length(24).required().messages({
-        "string.hex": "ID must be a hexadecimal string.",
-        "string.length": "ID must be exactly 24 characters long.",
+    id: Joi.number().integer().min(1).required().messages({
+        "number.base": "ID must be a number.",
+        "number.integer": "ID must be an integer.",
+        "number.min": "ID must be greater than 0.",
         "any.required": "ID field is required.",
     }),
-    email: Joi.string().email().pattern(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net)$/).required().messages({
+    sEmail: Joi.string()
+    .pattern(/^s\d{8}@stu\.najah\.edu$/)
+    .required()
+    .messages({
+      "string.pattern.base": "Student email must follow the format: s(unvi_number)@stu.najah.edu",
+      "any.required": "Email field is required.",
+    }),
+  
+     
+    hEmail: Joi.string().email().pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/).required().messages({
         "string.email": "Please enter a valid email address.",
-        "string.pattern.base": "Email must have a .com or .net domain only.",
+        "string.pattern.base": "Only Gmail addresses are allowed for owners.",
         "any.required": "Email field is required.",
     }),
     password: Joi.string().min(8).max(32).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/).required().messages({
