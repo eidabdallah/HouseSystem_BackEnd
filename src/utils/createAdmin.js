@@ -15,7 +15,6 @@ export const createAdmin = async () => {
                 role: "Admin",
                 status: "Active",
                 confirmEmail: true,
-                gender: "Male",
             });
         }
     } catch (error) {
