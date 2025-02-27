@@ -7,15 +7,10 @@ export const generalFields = {
         "number.min": "ID must be greater than 0.",
         "any.required": "ID field is required.",
     }),
-    sEmail: Joi.string()
-    .pattern(/^s\d{8}@stu\.najah\.edu$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Student email must follow the format: s(unvi_number)@stu.najah.edu",
-      "any.required": "Email field is required.",
+    sEmail: Joi.string().pattern(/^s\d{8}@stu\.najah\.edu$/).required().messages({
+        "string.pattern.base": "Student email must follow the format: s(unvi_number)@stu.najah.edu",
+        "any.required": "Email field is required.",
     }),
-  
-     
     hEmail: Joi.string().email().pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/).required().messages({
         "string.email": "Please enter a valid email address.",
         "string.pattern.base": "Only Gmail addresses are allowed for owners.",
@@ -27,6 +22,17 @@ export const generalFields = {
         "string.pattern.base": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
         "any.required": "Password field is required.",
     }),
+    phoneNumber: Joi.string().pattern(/^\d{10}$/).required().messages({
+        "string.pattern.base": "Phone number must be exactly 10 digits.",
+        "any.required": "Phone number field is required.",
+    }),
+    userName: Joi.string().pattern(/^[a-zA-Zء-ي ]+$/).required().min(3).max(20).messages({
+        "string.empty": "Username is required.",
+        "any.required": "Username is required.",
+        "string.min": "Username must be at least 3 characters long.",
+        "string.max": "Username must be at most 20 characters long.",
+        "string.pattern.base": "Username must contain only alphabetic characters and spaces.",
+    }),    
     image: Joi.object({
         fieldname: Joi.string().required().messages({
             "string.empty": "Fieldname is required.",
@@ -73,7 +79,7 @@ export const validation = (Schema) => {
         if (req.file)
             fillterData = { image: req.file, ...req.body, ...req.params, ...req.query };
         else if (req.files)
-            fillterData = { ...req.files , ...req.body, ...req.params, ...req.query };
+            fillterData = { ...req.files, ...req.body, ...req.params, ...req.query };
         else
             fillterData = { ...req.body, ...req.params, ...req.query };
         const errorMessages = {};
