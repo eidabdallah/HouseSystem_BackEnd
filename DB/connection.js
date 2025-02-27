@@ -10,11 +10,10 @@ export const sequelize = new Sequelize("houseSystem", "root", '', {
 export const connectDB = async () => {
     try {
         await sequelize.authenticate();
+        await sequelize.sync();
         console.log('✅ Database connected successfully...');
 
-        await sequelize.sync();
-        console.log('✅ Tables synchronized successfully...');
     } catch (error) {
-        console.error('❌ Error connecting to the database:', error || error.message);
+        console.log('❌ Error connecting to the database');
     }
 };
