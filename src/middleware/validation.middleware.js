@@ -2,75 +2,75 @@
 import Joi from 'joi';
 export const generalFields = {
     id: Joi.number().integer().min(1).required().messages({
-        "number.base": "ID must be a number.",
-        "number.integer": "ID must be an integer.",
-        "number.min": "ID must be greater than 0.",
-        "any.required": "ID field is required.",
+        "number.base": "المعرف يجب أن يكون رقمًا.",
+        "number.integer": "المعرف يجب أن يكون عددًا صحيحًا.",
+        "number.min": "المعرف يجب أن يكون أكبر من 0.",
+        "any.required": "حقل المعرف مطلوب.",
     }),
     sEmail: Joi.string().pattern(/^s\d{8}@stu\.najah\.edu$/).required().messages({
-        "string.pattern.base": "Student email must follow the format: s(unvi_number)@stu.najah.edu",
-        "any.required": "Email field is required.",
+        "string.pattern.base": "يجب أن يكون البريد الإلكتروني للطالب بالصيغة: s(رقم_الجامعة)@stu.najah.edu",
+        "any.required": "حقل البريد الإلكتروني مطلوب.",
     }),
     hEmail: Joi.string().email().pattern(/^[a-zA-Z0-9._%+-]+@gmail\.com$/).required().messages({
-        "string.email": "Please enter a valid email address.",
-        "string.pattern.base": "Only Gmail addresses are allowed for owners.",
-        "any.required": "Email field is required.",
+        "string.email": "يرجى إدخال بريد إلكتروني صالح.",
+        "string.pattern.base": "يُسمح فقط بعناوين Gmail لأصحاب العقارات.",
+        "any.required": "حقل البريد الإلكتروني مطلوب.",
     }),
     password: Joi.string().min(8).max(32).pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/).required().messages({
-        "string.min": "Password must be at least 8 characters long.",
-        "string.max": "Password must not exceed 32 characters.",
-        "string.pattern.base": "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.",
-        "any.required": "Password field is required.",
+        "string.min": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل.",
+        "string.max": "يجب ألا تتجاوز كلمة المرور 32 حرفًا.",
+        "string.pattern.base": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل، وحرف صغير واحد، ورقم واحد، ورمز خاص واحد.",
+        "any.required": "حقل كلمة المرور مطلوب.",
     }),
     phoneNumber: Joi.string().pattern(/^\d{10}$/).required().messages({
-        "string.pattern.base": "Phone number must be exactly 10 digits.",
-        "any.required": "Phone number field is required.",
+        "string.pattern.base": "يجب أن يتكون رقم الهاتف من 10 أرقام بالضبط.",
+        "any.required": "حقل رقم الهاتف مطلوب.",
     }),
     userName: Joi.string().pattern(/^[a-zA-Zء-ي ]+$/).required().min(3).max(20).messages({
-        "string.empty": "Username is required.",
-        "any.required": "Username is required.",
-        "string.min": "Username must be at least 3 characters long.",
-        "string.max": "Username must be at most 20 characters long.",
-        "string.pattern.base": "Username must contain only alphabetic characters and spaces.",
+        "string.empty": "اسم المستخدم مطلوب.",
+        "any.required": "اسم المستخدم مطلوب.",
+        "string.min": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل.",
+        "string.max": "يجب ألا يتجاوز اسم المستخدم 20 حرفًا.",
+        "string.pattern.base": "يجب أن يحتوي اسم المستخدم على أحرف أبجدية ومسافات فقط.",
     }),    
     image: Joi.object({
         fieldname: Joi.string().required().messages({
-            "string.empty": "Fieldname is required.",
-            "any.required": "Fieldname is required."
+            "string.empty": "اسم الحقل مطلوب.",
+            "any.required": "اسم الحقل مطلوب."
         }),
         originalname: Joi.string().required().messages({
-            "string.empty": "Original filename is required.",
-            "any.required": "Original filename is required."
+            "string.empty": "الاسم الأصلي للملف مطلوب.",
+            "any.required": "الاسم الأصلي للملف مطلوب."
         }),
         encoding: Joi.string().required().messages({
-            "string.empty": "Encoding type is required.",
-            "any.required": "Encoding type is required."
+            "string.empty": "نوع التشفير مطلوب.",
+            "any.required": "نوع التشفير مطلوب."
         }),
         mimetype: Joi.string()
             .valid("image/png", "image/jpeg", "image/gif", "image/ico", "image/svg+xml")
             .required()
             .messages({
-                "any.only": "Invalid image format. Allowed formats: PNG, JPEG, GIF, ICO, SVG.",
-                "any.required": "MIME type is required."
+                "any.only": "تنسيق الصورة غير صالح. التنسيقات المسموح بها: PNG، JPEG، GIF، ICO، SVG.",
+                "any.required": "نوع MIME مطلوب."
             }),
         destination: Joi.string().required().messages({
-            "string.empty": "Destination path is required.",
-            "any.required": "Destination path is required."
+            "string.empty": "مسار الوجهة مطلوب.",
+            "any.required": "مسار الوجهة مطلوب."
         }),
         filename: Joi.string().required().messages({
-            "string.empty": "Filename is required.",
-            "any.required": "Filename is required."
+            "string.empty": "اسم الملف مطلوب.",
+            "any.required": "اسم الملف مطلوب."
         }),
         path: Joi.string().required().messages({
-            "string.empty": "File path is required.",
-            "any.required": "File path is required."
+            "string.empty": "مسار الملف مطلوب.",
+            "any.required": "مسار الملف مطلوب."
         }),
         size: Joi.number().max(5000000).required().messages({
-            "number.max": "File size must not exceed 5MB.",
-            "any.required": "File size is required."
+            "number.max": "يجب ألا يتجاوز حجم الملف 5 ميجابايت.",
+            "any.required": "حجم الملف مطلوب."
         })
     }).required().messages({
-        "any.required": "Image is required."
+        "any.required": "الصورة مطلوبة."
     }),
 }
 export const validation = (Schema) => {
@@ -89,7 +89,7 @@ export const validation = (Schema) => {
                 const key = err.context.key;
                 errorMessages[key] = err.message;
             });
-            return res.status(400).json({ message: "validation Error", error: errorMessages });
+            return res.status(400).json({ message: "خطأ في التحقق من البيانات", error: errorMessages });
         }
         next();
     };

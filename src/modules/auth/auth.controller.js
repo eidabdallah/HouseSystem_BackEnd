@@ -14,7 +14,7 @@ export const studentRegister = async (req, res, next) => {
     const user = await userModel.create({ userName, email, password: hashPassword, phoneNumber, role: 'Student' });
     await studentModel.create({ universityBuilding, college, specialization, gender, userId: user.id });
     await sendConfirmEmail(email, userName, req);
-    return res.status(201).json({ message: "Student registered successfully." });
+    return res.status(201).json({ message: "تم تسجيل الطالب بنجاح ، يرجى تاكيد حسابك عبر الايميل" });
 }
 export const HouseOwnerRegister = async (req, res, next) => {
     const { userName, email, password, phoneNumber } = req.body;
@@ -24,41 +24,61 @@ export const HouseOwnerRegister = async (req, res, next) => {
         const { secure_url } = await cloudinary.uploader.upload(req.file.path, {
             folder: `${process.env.APPNAME}/houseOwner/${userName}/royaltyPhoto`
         });
-        await houseOwnerModel.create({royaltyPhoto : secure_url , userId: user.id });
+        await houseOwnerModel.create({ royaltyPhoto: secure_url, userId: user.id });
     }
     await sendConfirmEmail(email, userName, req);
-    return res.status(201).json({ message: "House Owner registered successfully." });
+    return res.status(201).json({ message: "تم تسجيل مالك السكن بنجاح ، يرجى تاكيد حسابك عبر الايميل" });
 }
 export const Login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await userModel.findOne({ where: { email } });
     if (!user)
-        return next(new AppError('User credentials are wrong', 400)); 
-    if (!user.confirmEmail)
-        return next(new AppError('Please confirm your email through the verification email', 403));
-    if (user.status === 'No_Active')
-        return next(new AppError('Account is not activated , please wait to admin accept your account', 403));
-
+        return next(new AppError('بيانات المستخدم غير صحيحة.', 400));
     const isMatch = bcrypt.compareSync(password, user.password);
     if (!isMatch)
-        return next(new AppError('User credentials are wrong', 400));
+        return next(new AppError('بيانات المستخدم غير صحيحة.', 400));
+    if (!user.confirmEmail)
+        return next(new AppError('يرجى تأكيد بريدك الإلكتروني من خلال رسالة التحقق.', 403));
+    if (user.status === 'No_Active')
+        return next(new AppError('الحساب غير مفعل، يرجى الانتظار حتى يقوم المسؤول بقبول حسابك.', 403));
+
 
     const token = jwt.sign({ id: user.id, email, userName: user.userName, role: user.role }, process.env.JWT_SECRET, { expiresIn: '10h' });
-    return res.status(200).json({ message: "Login successfully", token });
+    return res.status(200).json({ message: "تم تسجيل الدخول بنجاح.", token });
 }
 
 export const changePassword = async (req, res, next) => {
-
+    const { email, oldPassword, newPassword } = req.body;
+    if (req.user.email != email)
+        return next(new AppError('ايميلك الحالي لا يطابق هذا الايميل', 403));
+    const user = await userModel.findOne({ where: { email } });
+    if (!user)
+        return next(new AppError('الايميل غير متوفر', 404));
+    const isMatch = bcrypt.compareSync(oldPassword, user.password);
+    if (!isMatch)
+        return next(new AppError('كلمة السر القديمة خاطئة', 403));
+    user.password = bcrypt.hashSync(newPassword, parseInt(process.env.SALTROUND));
+    await user.save();
+    return res.status(200).json({ message: "تم اعادة تغيير كلمة المرور بنجاح" })
 }
 export const forgotPassword = async (req, res, next) => {
-
+    const { email, password, code } = req.body;
+    const user = await userModel.findOne({ where: { email } });
+    if (!user)
+        return next(new AppError('الايميل غير موجود', 404));
+    if (user.sendCode != code)
+        return next(new AppError('رمز التاكيد غير صحيح', 403));
+    user.password = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
+    user.sendCode = '';
+    await user.save();
+    return res.status(200).json({ message: "تم اعادة تغيير كلمة المرور بنجاح" })
 }
 export const sendCode = async (req, res, next) => {
     const { email } = req.body;
     const user = await userModel.findOne({ where: { email } });
     if (!user)
         return next(new AppError('الايميل غير موجود', 404));
-    const code = customAlphabet('123456789abcdefghijklmnopqrstuvwxyz', 6)();
+    const code = customAlphabet('123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)();
     user.sendCode = code;
     await user.save();
     await sendCodeToEmail(email, code);
@@ -66,7 +86,7 @@ export const sendCode = async (req, res, next) => {
         user.sendCode = '';
         await user.save();
     }, 3 * 60 * 1000);
-    return res.status(200).json({ message: "Code sent successfully" });
+    return res.status(200).json({ message: "تم إرسال الرمز على الايميل ." });
 }
 export const confirmEmail = async (req, res, next) => {
     const { token } = req.params;
@@ -77,6 +97,6 @@ export const confirmEmail = async (req, res, next) => {
         await user.save();
         await confirmEmailMessage(user.userName, res);
     } else {
-        return next(new AppError('user not found', 404));
+        return next(new AppError('المستخدم غير موجود.', 404));
     }
 }
