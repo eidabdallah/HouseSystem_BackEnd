@@ -4,6 +4,7 @@ import { globalhandleError } from '../utils/AppError.js';
 import { createAdmin } from '../utils/createAdmin.js';
 import authRouter from '../modules/auth/auth.router.js';
 import userRouter from '../modules/user/user.router.js';
+import adminRouter from '../modules/admin/admin.router.js';
 export const initApp = async (app, express) => {
     await connectDB();
     await createAdmin();
@@ -14,6 +15,7 @@ export const initApp = async (app, express) => {
     });
     app.use('/auth' , authRouter);
     app.use('/user' , userRouter);
+    app.use('/admin' , adminRouter);
     app.use(globalhandleError);
 
     app.use('*', (req, res) => {
