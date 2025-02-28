@@ -4,7 +4,7 @@ import { AppError } from "../../utils/AppError.js";
 import { customAlphabet } from "nanoid";
 import userModel from '../../../DB/model/user.model.js';
 import studentModel from '../../../DB/model/student.model.js';
-import { confirmEmailMessage, sendConfirmEmail } from '../../utils/authTemplete.js';
+import { confirmEmailMessage, sendCodeToEmail, sendConfirmEmail } from '../../utils/authTemplete.js';
 import houseOwnerModel from '../../../DB/model/houseOwner.model.js';
 import cloudinary from './../../utils/cloudinary.js';
 
@@ -54,7 +54,19 @@ export const forgotPassword = async (req, res, next) => {
 
 }
 export const sendCode = async (req, res, next) => {
-
+    const { email } = req.body;
+    const user = await userModel.findOne({ where: { email } });
+    if (!user)
+        return next(new AppError('الايميل غير موجود', 404));
+    const code = customAlphabet('123456789abcdefghijklmnopqrstuvwxyz', 6)();
+    user.sendCode = code;
+    await user.save();
+    await sendCodeToEmail(email, code);
+    setTimeout(async () => {
+        user.sendCode = '';
+        await user.save();
+    }, 3 * 60 * 1000);
+    return res.status(200).json({ message: "Code sent successfully" });
 }
 export const confirmEmail = async (req, res, next) => {
     const { token } = req.params;

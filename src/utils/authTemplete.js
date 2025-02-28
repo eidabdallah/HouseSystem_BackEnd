@@ -53,33 +53,37 @@ export const sendConfirmEmail = async (email, userName, req) => {
 
 export const sendCodeToEmail = async (email, code) => {
   const html = `
-   <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
-    <div style="max-width: 600px; margin: auto; background: linear-gradient(135deg, #007bff, #6c757d); padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
-      <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px;">
-        <div style="display: inline-block; border-radius: 50%; padding: 20px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
-          <img src="https://res.cloudinary.com/deylqxzgk/image/upload/v1738093063/logo_h7fcb2.png" 
+      <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 30px;">
+        <div style="max-width: 600px; margin: auto; background: linear-gradient(135deg, #007bff, #d97b32); padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
+          <img src="https://res.cloudinary.com/deylqxzgk/image/upload/c_thumb,w_200,g_face/v1740687998/2ea2907e-fda9-4b4c-bf50-abb69a5fa998.png" 
                alt="${process.env.APPNAME} Logo" 
-               style="width: 250px; display: block; margin: auto;" />
+               style="width: 180px; display: block; margin: auto; background: white; padding: 10px; border-radius: 10px;" />
+               
+          <h1 style="color: white; font-size: 28px; margin-top: 20px;">إليك رمز التحقق الخاص بك</h1>
+          
+          <p style="font-size: 16px; color: white; line-height: 1.6;">
+            استخدم هذا الرمز لإعادة تعيين كلمة المرور الخاصة بك.
+          </p>
+  
+          <div style="background-color: white; padding: 15px; border-radius: 8px; display: inline-block; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); margin: 20px auto;">
+            <p style="font-size: 24px; font-weight: bold; color: #333; margin: 0;">${code}</p>
+          </div>
+  
+          <p style="font-size: 14px; color: white; margin-top: 20px;">
+            إذا لم تطلب إعادة تعيين كلمة المرور، يمكنك تجاهل هذا البريد الإلكتروني.
+          </p>
+  
+          <p style="font-size: 12px; color: #f1f1f1; margin-top: 20px; line-height: 1.5;">
+            هذا الرمز صالح لفترة محدودة فقط.
+          </p>
+  
+          <hr style="border: none; border-top: 1px solid white; margin: 20px 0;" />
         </div>
-        <h1 style="color: white; font-size: 28px; margin-top: 20px;">Your Verification Code</h1>
       </div>
-      <p style="font-size: 16px; color: #f8f9fa; line-height: 1.5; margin: 20px 0;">
-        Here is your code to reset your password.
-      </p>
-      <div style="background-color: #fff; padding: 15px; border-radius: 8px; display: inline-block; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); margin: 20px auto;">
-        <p style="font-size: 24px; font-weight: bold; color: #333; margin: 0;">${code}</p>
-      </div>
-      <p style="font-size: 14px; color: #f8f9fa; margin: 20px 0;">
-        Please enter this code in the reset password page to proceed.
-      </p>
-      <p style="font-size: 12px; color: #dee2e6; margin-top: 20px; line-height: 1.5;">
-        If you did not request a password reset, please ignore this email. This code will expire automatically.
-      </p>
-      <hr style="border: none; border-top: 1px solid #6c757d; margin: 20px 0;" />
-    </div>
-  </div>`;
-  await sendEmail(email, 'Reset Password', html);
-}
+    `;
+
+  await sendEmail(email, 'إعادة تعيين كلمة المرور', html);
+};
 
 export const confirmEmailMessage = (name, res) => {
   const html = `

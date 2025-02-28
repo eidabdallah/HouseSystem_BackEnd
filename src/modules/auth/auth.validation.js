@@ -34,15 +34,26 @@ export const houseOwnerRegisterSchema = Joi.object({
     email: generalFields.hEmail,
     password: generalFields.password,
     phoneNumber: generalFields.phoneNumber,
-    image : generalFields.image.optional(),
+    image: generalFields.image.optional(),
 });
 
 export const loginSchema = Joi.object({
     email: Joi.alternatives().try(
         generalFields.hEmail,
         generalFields.sEmail
-    ).messages({
-        "alternatives.match": "The email must be either a student email from An-Najah University or a Gmail address."
+    ).required().messages({
+        "alternatives.match": "The email must be either a student email from An-Najah University or a Gmail address.",
+        "any.required": "Email is required."
     }),
     password: generalFields.password,
+});
+
+export const sendCodeSchema = Joi.object({
+    email: Joi.alternatives().try(
+        generalFields.hEmail,
+        generalFields.sEmail
+    ).required().messages({
+        "alternatives.match": "The email must be either a student email from An-Najah University or a Gmail address.",
+        "any.required": "Email is required."
+    }),
 });
