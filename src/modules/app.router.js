@@ -5,9 +5,11 @@ import { createAdmin } from '../utils/createAdmin.js';
 import authRouter from '../modules/auth/auth.router.js';
 import userRouter from '../modules/user/user.router.js';
 import adminRouter from '../modules/admin/admin.router.js';
+import cleanupExpiredCodes from '../utils/clearSendCode.js';
 export const initApp = async (app, express) => {
     await connectDB();
     await createAdmin();
+    cleanupExpiredCodes();
     app.use(cors());
     app.use(express.json());
     app.get('/', (req, res) => {

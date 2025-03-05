@@ -7,6 +7,7 @@ import studentModel from '../../../DB/model/student.model.js';
 import { confirmEmailMessage, sendCodeToEmail, sendConfirmEmail } from '../../utils/authTemplete.js';
 import houseOwnerModel from '../../../DB/model/houseOwner.model.js';
 import cloudinary from './../../utils/cloudinary.js';
+import passwordResetCode from '../../../DB/model/passwordResetCode.js';
 
 export const studentRegister = async (req, res, next) => {
     const { userName, email, password, phoneNumber, universityBuilding, college, specialization, gender } = req.body;
@@ -62,30 +63,31 @@ export const changePassword = async (req, res, next) => {
     return res.status(200).json({ message: "تم اعادة تغيير كلمة المرور بنجاح" })
 }
 export const forgotPassword = async (req, res, next) => {
-    const { email, password, code } = req.body;
+    const { email, password, code } = req.body;    
     const user = await userModel.findOne({ where: { email } });
-    if (!user)
+    if (!user) {
         return next(new AppError('الايميل غير موجود', 404));
-    if (user.sendCode != code)
+    }
+    const resetCode = await passwordResetCode.findOne({
+        where: { userId: user.id, code }
+    });
+    if (!resetCode) {
         return next(new AppError('رمز التاكيد غير صحيح', 403));
+    }
     user.password = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
-    user.sendCode = '';
+    await resetCode.destroy();
     await user.save();
-    return res.status(200).json({ message: "تم اعادة تغيير كلمة المرور بنجاح" })
-}
+    return res.status(200).json({ message: "تم اعادة تغيير كلمة المرور بنجاح" });
+};
+
 export const sendCode = async (req, res, next) => {
     const { email } = req.body;
     const user = await userModel.findOne({ where: { email } });
     if (!user)
         return next(new AppError('الايميل غير موجود', 404));
     const code = customAlphabet('123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', 6)();
-    user.sendCode = code;
-    await user.save();
+    await passwordResetCode.create({code , userId : user.id});
     await sendCodeToEmail(email, code);
-    setTimeout(async () => {
-        user.sendCode = '';
-        await user.save();
-    }, 3 * 60 * 1000);
     return res.status(200).json({ message: "تم إرسال الرمز على الايميل ." });
 }
 export const confirmEmail = async (req, res, next) => {

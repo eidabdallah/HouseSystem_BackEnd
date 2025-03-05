@@ -2,6 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../connection.js';
 import studentModel from './student.model.js';
 import houseOwnerModel from './houseOwner.model.js';
+import passwordResetCode from './passwordResetCode.js';
 
 const userModel = sequelize.define('User', {
     userName: {
@@ -20,10 +21,6 @@ const userModel = sequelize.define('User', {
     confirmEmail: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-    },
-    sendCode: {
-        type: DataTypes.STRING,
-        defaultValue: ''
     },
     role: {
         type: DataTypes.ENUM('Student', 'HouseOwner', 'Admin'),
@@ -49,6 +46,8 @@ studentModel.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 
 userModel.hasOne(houseOwnerModel, { foreignKey: 'userId', as: 'houseOwner', onDelete: 'CASCADE' });
 houseOwnerModel.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
 
+userModel.hasOne(passwordResetCode, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
+passwordResetCode.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
 
 
 export default userModel;
