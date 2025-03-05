@@ -7,7 +7,7 @@ import studentModel from '../../../DB/model/student.model.js';
 import { confirmEmailMessage, sendCodeToEmail, sendConfirmEmail } from '../../utils/authTemplete.js';
 import houseOwnerModel from '../../../DB/model/houseOwner.model.js';
 import cloudinary from './../../utils/cloudinary.js';
-import passwordResetCode from '../../../DB/model/passwordResetCode.js';
+import passwordResetCode from '../../../DB/model/passwordResetCode.model.js';
 
 export const studentRegister = async (req, res, next) => {
     const { userName, email, password, phoneNumber, universityBuilding, college, specialization, gender } = req.body;

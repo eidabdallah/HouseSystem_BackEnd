@@ -1,5 +1,5 @@
 import cron from 'node-cron';
-import passwordResetCode from '../../DB/model/passwordResetCode.js';
+import passwordResetCode from '../../DB/model/passwordResetCode.model.js';
 
 const cleanupExpiredCodes = () => {
     cron.schedule('0 */3 * * *', async () => {
