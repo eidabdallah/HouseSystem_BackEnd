@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../connection.js';
 import studentModel from './student.model.js';
 import houseOwnerModel from './houseOwner.model.js';
-import passwordResetCode from './passwordResetCode.js';
+import passwordResetCode from './passwordResetCode.model.js';
 
 const userModel = sequelize.define('User', {
     userName: {
