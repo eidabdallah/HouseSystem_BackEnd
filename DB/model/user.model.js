@@ -3,6 +3,7 @@ import { sequelize } from './../connection.js';
 import studentModel from './student.model.js';
 import houseOwnerModel from './houseOwner.model.js';
 import passwordResetCode from './passwordResetCode.model.js';
+import houseModel from './house.model.js';
 
 const userModel = sequelize.define('User', {
     userName: {
@@ -40,14 +41,16 @@ const userModel = sequelize.define('User', {
     timestamps: true,
 });
 
-userModel.hasOne(studentModel, { foreignKey: 'userId', as: 'student', onDelete: 'CASCADE' });
-studentModel.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
+userModel.hasOne(studentModel, { onDelete: 'CASCADE' });
+studentModel.belongsTo(userModel, { onDelete: 'CASCADE' });
 
-userModel.hasOne(houseOwnerModel, { foreignKey: 'userId', as: 'houseOwner', onDelete: 'CASCADE' });
-houseOwnerModel.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
+userModel.hasOne(houseOwnerModel, { onDelete: 'CASCADE' });
+houseOwnerModel.belongsTo(userModel, { onDelete: 'CASCADE' });
 
-userModel.hasOne(passwordResetCode, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
-passwordResetCode.belongsTo(userModel, { foreignKey: 'userId', as: 'user', onDelete: 'CASCADE' });
+userModel.hasOne(passwordResetCode, { onDelete: 'CASCADE' });
+passwordResetCode.belongsTo(userModel, { onDelete: 'CASCADE' });
 
+userModel.hasMany(houseModel, { onDelete: 'CASCADE' });
+houseModel.belongsTo(userModel, { onDelete: 'CASCADE' });
 
 export default userModel;

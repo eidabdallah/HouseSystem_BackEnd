@@ -1,6 +1,7 @@
 import studentModel from '../../../DB/model/student.model.js';
 import userModel from './../../../DB/model/user.model.js';
 import { AppError } from './../../utils/AppError.js';
+
 export const updateUserInfromation = async (req, res, next) => {
     const { userName, phoneNumber, universityBuilding, college, specialization } = req.body;
     if (Object.keys(req.body).length === 0) {
