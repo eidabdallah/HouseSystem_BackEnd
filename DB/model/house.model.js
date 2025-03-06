@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from './../connection.js';
+import roomModel from './room.model.js';
 const houseModel = sequelize.define('House', {
     location:{ // gps
         type: DataTypes.STRING,
@@ -33,5 +34,8 @@ const houseModel = sequelize.define('House', {
 }, {
     timestamps: true,
 });
+
+houseModel.hasMany(roomModel, { onDelete: 'CASCADE' });
+roomModel.belongsTo(houseModel, { onDelete: 'CASCADE' });
 
 export default houseModel;
