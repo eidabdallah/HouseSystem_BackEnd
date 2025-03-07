@@ -4,7 +4,7 @@ import roomModel from './room.model.js';
 const houseModel = sequelize.define('House', {
     location:{ // gps
         type: DataTypes.STRING,
-        allowNull: false,  
+        allowNull: true,
     },
     address :{
         type: DataTypes.STRING,
@@ -17,7 +17,6 @@ const houseModel = sequelize.define('House', {
     status: {
         type: DataTypes.ENUM('Active', 'No_Active'),
         defaultValue: 'Active',
-        allowNull: false
     },
     description : {
         type: DataTypes.TEXT,
