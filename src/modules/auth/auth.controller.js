@@ -13,7 +13,7 @@ export const studentRegister = async (req, res, next) => {
     const { userName, email, password, phoneNumber, universityBuilding, college, specialization, gender } = req.body;
     const hashPassword = bcrypt.hashSync(password, parseInt(process.env.SALTROUND));
     const user = await userModel.create({ userName, email, password: hashPassword, phoneNumber, role: 'Student' });
-    await studentModel.create({ universityBuilding, college, specialization, gender, userId: user.id });
+    await studentModel.create({ universityBuilding, college, specialization, gender, UserId: user.id });
     await sendConfirmEmail(email, userName, req);
     return res.status(201).json({ message: "تم تسجيل الطالب بنجاح ، يرجى تاكيد حسابك عبر الايميل" });
 }

@@ -2,10 +2,6 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../connection.js';
 import roomModel from './room.model.js';
 const houseModel = sequelize.define('House', {
-    location:{ // gps
-        type: DataTypes.STRING,
-        allowNull: true,
-    },
     address :{
         type: DataTypes.STRING,
         allowNull: false,
