@@ -44,7 +44,7 @@ export const Login = async (req, res, next) => {
         return next(new AppError('الحساب غير مفعل، يرجى الانتظار حتى يقوم المسؤول بقبول حسابك.', 403));
 
 
-    const token = jwt.sign({ id: user.id, email, userName: user.userName, role: user.role }, process.env.JWT_SECRET, { expiresIn: '10h' });
+    const token = jwt.sign({ id: user.id, email, userName: user.userName, role: user.role }, process.env.JWT_SECRET_Login, { expiresIn: '10h' });
     return res.status(200).json({ message: "تم تسجيل الدخول بنجاح.", token });
 }
 
@@ -92,7 +92,7 @@ export const sendCode = async (req, res, next) => {
 }
 export const confirmEmail = async (req, res, next) => {
     const { token } = req.params;
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET_ConfirmEmail);
     const user = await userModel.findOne({ where: { email: decodedToken.email } });
     if (user) {
         user.confirmEmail = true;

@@ -14,7 +14,7 @@ export const auth = (accessRoles = []) => {
             return next(new AppError("التوكن غير متوفر", 401));
         }
         const token = authorization.split(process.env.BEARERKEY)[1];
-        const decode = jwt.verify(token, process.env.JWT_SECRET);
+        const decode = jwt.verify(token, process.env.JWT_SECRET_Login);
         if (!decode) {
             return next(new AppError("التوكن غير متوفر", 401));
         }

@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 
 
 export const sendConfirmEmail = async (email, userName, req) => {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: 60 * 5 });
-  const refreshToken = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  const token = jwt.sign({ email }, process.env.JWT_SECRET_ConfirmEmail, { expiresIn: 60 * 5 });
+  const refreshToken = jwt.sign({ email }, process.env.JWT_SECRET_ConfirmEmail, { expiresIn: '1h' });
 
   const html = `
     <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f4f4f4; padding: 30px;">
