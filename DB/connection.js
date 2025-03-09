@@ -10,7 +10,7 @@ export const sequelize = new Sequelize("houseSystem", "root", '', {
 export const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({ force: false });
+        await sequelize.sync({ alter: false });
         console.log('✅ Database connected successfully...');
 
     } catch (error) {

@@ -4,9 +4,11 @@ import { asyncHandler } from './../../utils/asyncHandler.js';
 import { validation } from '../../middleware/validation.middleware.js';
 import { auth } from '../../middleware/auth.middleware.js';
 import { endPoints } from './house.role.js';
+import roomRouter from '../room/room.router.js';
 import { createHouseSchema, deleteHouseSchema, updateHouseInformationSchema, updateHouseStatusSchema } from './house.validation.js';
 const router = Router();
 
+router.use('/:id/room', roomRouter);
 router.post('/create', asyncHandler(validation(createHouseSchema)), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.createHouse));
 router.get('/allHouses', asyncHandler(auth(endPoints.student)), asyncHandler(controller.getAllHousesForStudents));
 router.get('/', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.getHouseListForHouseOwner));
