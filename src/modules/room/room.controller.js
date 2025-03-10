@@ -19,8 +19,6 @@ export const create = async (req, res, next) => {
     }
     return res.status(201).json({ message: 'الغرفة تم إنشاؤها بنجاح.' });
 }
-
-
 export const updateRoom = async (req, res, next) => {
 
     const room = await roomModel.findByPk(req.params.roomId);
@@ -46,12 +44,24 @@ export const updateRoom = async (req, res, next) => {
         await room.save();
     }
     return res.status(200).json({ message: 'تم تحديث الغرفة بنجاح.' });
-};
-
-
+}
 export const deleteRoom = async (req, res, next) => {
     const room = await roomModel.findByPk(req.params.id);
     if (!room) return next(new AppError('الغرفة غير موجودة.', 404));
     await room.destroy();
     return res.status(200).json({ message: 'الغرفة تم حذفها بنجاح.' });
+}
+export const getRoomById = async (req, res, next) => {
+    const room = await roomModel.findByPk(req.params.roomId, {
+        include: {
+            model: roomPhotoModel,
+            attributes: ['id', 'secure_url']
+        },
+        attributes: ['id', 'roomType', 'HouseId']
+    });
+    if (!room) return next(new AppError('الغرفة غير موجودة.', 404));
+    if (req.params.id != room.HouseId)
+        return next(new AppError('هذه الغرفة ليست في هذا المنزل', 403));
+    return res.status(200).json({ message: "تم جلب الصورة بنجاح", room });
+
 }

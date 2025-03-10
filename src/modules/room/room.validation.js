@@ -12,6 +12,7 @@ export const createRoomSchema = Joi.object({
 });
 export const updateRoomSchema = Joi.object({
     id: generalFields.id,
+    roomId: generalFields.id,
     roomType: Joi.string().valid('sleepRoom', 'SecondaryRoom').optional().messages({
         "any.only": "نوع الغرفة يجب أن يكون إما 'sleepRoom' أو 'Female'.",
         "string.base": "نوع الغرفة يجب أن يكون نصًا.",
@@ -22,4 +23,8 @@ export const updateRoomSchema = Joi.object({
 });
 export const deleteRoomSchema = Joi.object({
     id: generalFields.id,
+});
+export const getRoomByIdSchema = Joi.object({
+    id: generalFields.id,
+    roomId: generalFields.id,
 });
