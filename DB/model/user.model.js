@@ -4,6 +4,8 @@ import studentModel from './student.model.js';
 import houseOwnerModel from './houseOwner.model.js';
 import passwordResetCode from './passwordResetCode.model.js';
 import houseModel from './house.model.js';
+import reservationModel from './reservation.model.js';
+import bookingRequestModel from './bookingRequest.model.js';
 
 const userModel = sequelize.define('User', {
     userName: {
@@ -52,5 +54,11 @@ passwordResetCode.belongsTo(userModel, { onDelete: 'CASCADE' });
 
 userModel.hasMany(houseModel, { onDelete: 'CASCADE' });
 houseModel.belongsTo(userModel, { onDelete: 'CASCADE' });
+
+userModel.hasMany(reservationModel, { onDelete: 'CASCADE' });
+reservationModel.belongsTo(userModel, { onDelete: 'CASCADE' });
+
+userModel.hasMany(bookingRequestModel, { onDelete: 'CASCADE' });
+bookingRequestModel.belongsTo(userModel, { onDelete: 'CASCADE' });
 
 export default userModel;

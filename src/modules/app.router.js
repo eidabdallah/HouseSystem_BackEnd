@@ -6,6 +6,8 @@ import userRouter from '../modules/user/user.router.js';
 import adminRouter from '../modules/admin/admin.router.js';
 import houseRouter from '../modules/house/house.router.js';
 import roomRouter from '../modules/room/room.router.js';
+import reservationRouter from '../modules/reservation/reservation.router.js';
+import reservationRequestRouter from '../modules/reservationRequest/reservationRequest.router.js';
 import { setupApp } from './setupApp.js';
 export const initApp = async (app, express) => {
     await connectDB();
@@ -20,6 +22,10 @@ export const initApp = async (app, express) => {
     app.use('/admin' , adminRouter);
     app.use('/house' , houseRouter);
     app.use('/room' , roomRouter);
+    app.use('/reservation' , reservationRouter);
+    app.use('/reservationRequest' , reservationRequestRouter);
+
+
     app.use(globalhandleError);
 
     app.use('*', (req, res) => {
