@@ -2,10 +2,16 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from './../connection.js';
 import roomPhotoModel from './roomPhoto.model.js';
 const roomModel = sequelize.define('Room', {
-    roomType:{
+    roomType: {
         type: DataTypes.ENUM('sleepRoom', 'SecondaryRoom'),
         allowNull: false,
         required: true
+    },
+    noOfBed: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        required: true,
+        defaultValue: 0
     }
 }, {
     timestamps: true,
