@@ -5,11 +5,10 @@ import { AppError } from "../../utils/AppError.js";
 import cloudinary from './../../utils/cloudinary.js';
 
 export const create = async (req, res, next) => {
-    const { roomType } = req.body;
     const { id } = req.params; // houseId 
     const house = await houseModel.findByPk(id);
     if (!house) return next(new AppError('البيت غير متوفر.', 404));
-    const room = await roomModel.create({ roomType, HouseId: id });
+    const room = await roomModel.create({ ...req.body, HouseId: id });
     if (req.files.photo) {
         for (const file of req.files.photo) {
             const { secure_url, public_id } = await cloudinary.uploader.upload(file.path,
@@ -57,7 +56,7 @@ export const getRoomById = async (req, res, next) => {
             model: roomPhotoModel,
             attributes: ['id', 'secure_url']
         },
-        attributes: ['id', 'roomType', 'HouseId']
+        attributes: ['id', 'roomType', 'noOfBed', 'HouseId']
     });
     if (!room) return next(new AppError('الغرفة غير موجودة.', 404));
     if (req.params.id != room.HouseId)

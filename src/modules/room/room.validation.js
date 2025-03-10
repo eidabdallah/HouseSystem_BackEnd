@@ -8,6 +8,11 @@ export const createRoomSchema = Joi.object({
         "string.empty": "نوع الغرفة مطلوب.",
         "any.required": "نوع الغرفة مطلوب."
     }),
+    noOfBed: Joi.number().min(0).optional().messages({
+        "number.min": "عدد الغرف يجب أن يكون عددا أكبر من 0.",
+        "number.base": "عدد الغرف يجب أن يكون رقما صحيحا.",
+        "any.required": "عدد الغرف مطلوب."
+    }),
     photo: Joi.array().items(generalFields.image).max(5),
 });
 export const updateRoomSchema = Joi.object({

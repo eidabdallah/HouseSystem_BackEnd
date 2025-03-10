@@ -10,7 +10,6 @@ const roomModel = sequelize.define('Room', {
     noOfBed: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        required: true,
         defaultValue: 0
     }
 }, {
