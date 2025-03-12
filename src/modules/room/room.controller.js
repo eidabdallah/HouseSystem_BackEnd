@@ -40,8 +40,14 @@ export const updateRoom = async (req, res, next) => {
     }
     if (req.body.roomType) {
         room.roomType = req.body.roomType;
-        await room.save();
     }
+    if (req.body.noOfBed) {
+        room.noOfBed = req.body.noOfBed;
+    }
+    if (req.body.price) {
+        room.price = req.body.price;
+    }
+    await room.save();
     return res.status(200).json({ message: 'تم تحديث الغرفة بنجاح.' });
 }
 export const deleteRoom = async (req, res, next) => {
@@ -56,7 +62,7 @@ export const getRoomById = async (req, res, next) => {
             model: roomPhotoModel,
             attributes: ['id', 'secure_url']
         },
-        attributes: ['id', 'roomType', 'noOfBed', 'HouseId']
+        attributes: ['id', 'roomType', 'noOfBed', 'HouseId' , 'price']
     });
     if (!room) return next(new AppError('الغرفة غير موجودة.', 404));
     if (req.params.id != room.HouseId)

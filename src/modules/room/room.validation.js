@@ -8,12 +8,16 @@ export const createRoomSchema = Joi.object({
         "string.empty": "نوع الغرفة مطلوب.",
         "any.required": "نوع الغرفة مطلوب."
     }),
-    noOfBed: Joi.number().min(0).optional().messages({
+    noOfBed: Joi.number().min(0).required().messages({
         "number.min": "عدد الغرف يجب أن يكون عددا أكبر من 0.",
         "number.base": "عدد الغرف يجب أن يكون رقما صحيحا.",
         "any.required": "عدد الغرف مطلوب."
     }),
     photo: Joi.array().items(generalFields.image).max(5),
+    price : Joi.number().required().messages({
+        "number.base": "السعر يجب أن يكون رقما صحيحا.",
+        "any.required": "السعر مطلوب."
+    }),
 });
 export const updateRoomSchema = Joi.object({
     id: generalFields.id,
@@ -25,6 +29,10 @@ export const updateRoomSchema = Joi.object({
         "any.required": "نوع الغرفة مطلوب."
     }),
     photo: Joi.array().items(generalFields.image).max(5).optional(),
+    price : Joi.number().optional().messages({
+        "number.base": "السعر يجب أن يكون رقما صحيحا.",
+        "any.required": "السعر مطلوب."
+    }),
 });
 export const deleteRoomSchema = Joi.object({
     id: generalFields.id,

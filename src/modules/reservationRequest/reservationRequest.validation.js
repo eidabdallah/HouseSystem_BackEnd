@@ -51,8 +51,8 @@ export const updateRequestSchema = Joi.object({
 
 export const changeBookingStatusSchema = Joi.object({
     id: generalFields.id,
-    status: Joi.string().valid('confirmed', 'pending', 'rejected').required().messages({
-        "any.only": "حالة الطلب يجب أن تكون 'confirmed', 'pending' أو 'rejected'.",
+    status: Joi.string().valid('confirmed', 'pending', 'rejected', 'reviewing ').required().messages({
+        "any.only": "حالة الطلب يجب أن تكون 'confirmed', 'pending' أو 'rejected'أو reviewing ",
         "any.required": "حالة الطلب مطلوبة."
     })
 });

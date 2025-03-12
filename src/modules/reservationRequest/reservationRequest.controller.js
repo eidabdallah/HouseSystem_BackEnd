@@ -23,6 +23,10 @@ export const createRequsetReservation = async (req, res, next) => {
         return next(new AppError('عدد الأسرة المطلوبة غير متاح في هذه الغرفة', 400));
 
     }
+    if (room.noOfBed == numberOfBedsBooked)
+        req.body.price = room.price;
+    else
+        req.body.price = room.price / 2;
     await bookingRequestModel.create(req.body);
     return res.status(201).json({ message: 'تم تقديم الطلب بنجاح' });
 }
@@ -34,7 +38,7 @@ export const getStudentRequest = async (req, res, next) => {
         include: [
             {
                 model: roomModel,
-                attributes: ['roomType'],
+                attributes: ['roomType', 'noOfBed'],
                 include: [
                     {
                         model: roomPhotoModel,
@@ -44,14 +48,17 @@ export const getStudentRequest = async (req, res, next) => {
             },
         ],
     });
+
     if (!bookingRequests || bookingRequests.length === 0) {
         return res.status(404).json({ message: "لا توجد طلبات حجز لك" });
     }
+
     return res.status(200).json({
         message: "تم جلب جميع الطلبات",
         bookingRequests: bookingRequests,
     });
-}
+};
+
 export const deleteRequest = async (req, res, next) => {
     const bookingRequest = await bookingRequestModel.findByPk(req.params.id);
     if (!bookingRequest) return next(new AppError('الطلب غير موجود', 404));
@@ -78,30 +85,30 @@ export const updateRequest = async (req, res, next) => {
         if (availableBeds < 0) {
             return next(new AppError('عدد الأسرة المطلوبة غير متاح في هذه الغرفة', 400));
         }
+        if (room.noOfBed == req.body.numberOfBedsBooked)
+            req.body.price = room.price;
+        else
+            req.body.price = room.price / 2;
     }
+    req.body.status = 'pending';
     bookingRequest.update(req.body);
     return res.status(200).json({ message: "تم تحديث الطلب بنجاح" });
 }
 
 // for admin : 
 export const getRequsetReservation = async (req, res, next) => {
-
     const UserId = req.user.id; // house Owner Id
-
     const houses = await houseModel.findAll({ where: { UserId } });
     if (!houses || houses.length === 0) {
         return res.status(404).json({ message: "لا توجد بيوت مملوكة لهذا المستخدم" });
     }
-
     const houseIds = houses.map(house => house.id);
     const rooms = await roomModel.findAll({
         where: { HouseId: houseIds, roomType: 'sleepRoom' },
     });
-
     if (!rooms || rooms.length === 0) {
         return res.status(404).json({ message: "لا توجد غرف في هذه البيوت" });
     }
-
     const roomIds = rooms.map(room => room.id);
     const bookingRequests = await bookingRequestModel.findAll({
         where: { RoomId: roomIds, status: 'pending' },
@@ -112,9 +119,8 @@ export const getRequsetReservation = async (req, res, next) => {
                 attributes: ['id', 'userName', 'phoneNumber'],
             },
             {
-
                 model: roomModel,
-                attributes: ['roomType'],
+                attributes: ['roomType', 'price', 'noOfBed'],
                 include: [
                     {
                         model: roomPhotoModel,
@@ -128,7 +134,12 @@ export const getRequsetReservation = async (req, res, next) => {
     if (!bookingRequests || bookingRequests.length === 0) {
         return res.status(404).json({ message: "لا توجد طلبات حجز لهذه الغرفة" });
     }
-
+    bookingRequests.forEach(request => {
+        const room = request.Room;
+        if (room.noOfBed === 2 && request.numberOfBedsBooked === 1) {
+            room.price = room.price / 2;
+        }
+    });
     return res.status(200).json({
         message: "تم جلب جميع الطلبات",
         bookingRequests: bookingRequests,
@@ -139,7 +150,7 @@ export const changeBookingStatus = async (req, res, next) => {
     const { status } = req.body;
     const bookingRequest = await bookingRequestModel.findByPk(req.params.id);
     if (!bookingRequest) return next(new AppError('الطلب غير موجود', 404));
-    if (status === 'confirmed'){
+    if (status === 'confirmed') {
         await bookingRequest.destroy();
         const reservationDetails = {
             UserId: bookingRequest.UserId,
@@ -147,6 +158,7 @@ export const changeBookingStatus = async (req, res, next) => {
             checkInDate: bookingRequest.checkInDate,
             checkOutDate: bookingRequest.checkOutDate,
             numberOfBedsBooked: bookingRequest.numberOfBedsBooked,
+            price: bookingRequest.price,
         };
         return res.status(200).json({
             message: "تم تأكيد الطلب بنجاح",

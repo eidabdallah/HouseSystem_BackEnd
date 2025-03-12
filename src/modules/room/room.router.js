@@ -11,5 +11,5 @@ const router = Router({ mergeParams: true });
 router.post('/', fileUpload(fileMimeTypes.image).fields([{ name: 'photo', maxCount: 5 }]), validation(createRoomSchema), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.create));
 router.patch('/:roomId', fileUpload(fileMimeTypes.image).fields([{ name: 'photo', maxCount: 5 }]), validation(updateRoomSchema), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.updateRoom));
 router.delete('/:id', validation(deleteRoomSchema), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.deleteRoom));
-router.get('/:roomId',validation(getRoomByIdSchema) , asyncHandler(auth(endPoints.houseOwner)) , asyncHandler(controller.getRoomById));
+router.get('/:roomId',validation(getRoomByIdSchema) , asyncHandler(auth(endPoints.get)) , asyncHandler(controller.getRoomById));
 export default router;

@@ -13,6 +13,11 @@ const roomModel = sequelize.define('Room', {
         type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0
+    },
+    price:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0
     }
 }, {
     timestamps: true,
