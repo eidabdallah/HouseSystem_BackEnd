@@ -21,6 +21,7 @@ export const auth = (accessRoles = []) => {
         const user = await userModel.findByPk(decode.id, {
             attributes: ['id' ,'userName', 'role', 'email']
         });
+        
         if (!user) {
             return next(new AppError("المستخدم غير متوفر", 404));
         }

@@ -9,7 +9,9 @@ const router = Router();
 router.post('/', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.createReservation));
 router.delete('/:id', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.deleteReservation));
 router.get('/', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.getAllReservation));
+router.get('/sReservation', asyncHandler(auth(endPoints.student)), asyncHandler(controller.getstudentReservation));
 router.get('/:id', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.getReservationById));
 router.put('/:id', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.updateReservation));
+
 
 export default router;

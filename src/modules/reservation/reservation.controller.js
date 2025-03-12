@@ -1,13 +1,3 @@
-
-/*
-يعمل الحجز ✅
-يلغي الحجز ✅
-يعدل الحجز ✅
-الطالب يقدم طلب تجديد وصاحب السكن يوافق عليه او يرفض
-يجيب كل الحجوزات لصاحب السكن ✅
-الطالب يشوف الحجز تاعه وكم متبقي 
-*/
-
 import { Op } from "sequelize";
 import houseModel from "../../../DB/model/house.model.js";
 import reservationModel from "../../../DB/model/reservation.model.js";
@@ -40,8 +30,7 @@ export const createReservation = async (req, res, next) => {
     }
     await reservationModel.create({ checkInDate, checkOutDate, numberOfBedsBooked, RoomId, UserId, price });
     return res.status(201).json({ message: "تم اضافة الحجز بنجاح" });
-};
-
+}
 
 export const deleteReservation = async (req, res, next) => {
     const reservation = await reservationModel.findByPk(req.params.id);
@@ -91,7 +80,6 @@ export const getAllReservation = async (req, res, next) => {
 
 }
 
-
 export const getReservationById = async (req, res, next) => {
     const reservation = await reservationModel.findByPk(req.params.id, {
         attributes: ['checkInDate', 'checkOutDate', 'numberOfBedsBooked', 'price'],
@@ -133,7 +121,7 @@ export const updateReservation = async (req, res, next) => {
 
     const room = await roomModel.findByPk(reservation.RoomId);
     if (!room) return next(new AppError('الغرفة غير موجودة', 404));
-    if(numberOfBedsBooked > room.noOfBed)
+    if (numberOfBedsBooked > room.noOfBed)
         return next(new AppError('عدد الأسرة المتاحة غير كافي للحجز', 400));
     const existingReservations = await reservationModel.findAll({
         where: { RoomId: room.id, id: { [Op.not]: reservation.id } },
@@ -167,4 +155,36 @@ export const updateReservation = async (req, res, next) => {
         price: price
     });
     return res.status(200).json({ message: "تم تحديث الحجز بنجاح" });
+}
+
+export const getstudentReservation = async (req, res, next) => {
+    const studentId = req.user.id;
+    const reservations = await reservationModel.findAll({
+        where: { UserId: studentId },
+        attributes: ['id', 'checkInDate', 'checkOutDate', 'numberOfBedsBooked', 'price'],
+        include: [
+            {
+                model: roomModel,
+                attributes: ['id', 'HouseId'],
+                include: [
+                    {
+                        model: roomPhotoModel,
+                        attributes: ['secure_url']
+                    }
+                ]
+            }
+        ]
+    });
+    if (!reservations.length) {
+        return next(new AppError('لا يوجد حجوزات للطالب', 404));
+    }
+    let daysRemaining = 0;
+    const today = moment().startOf('day');
+    reservations.forEach(reservation => {
+        const checkOutDate = moment(reservation.checkOutDate).startOf('day');
+        daysRemaining = checkOutDate.diff(today, 'days');
+
+        daysRemaining = daysRemaining > 0 ? `${daysRemaining} ايام` : 'انتهت فترة الحجز';
+    });
+    return res.status(200).json({ message: "تم جلب جميع الحجوزات للطالب", reservations , daysRemaining});
 };
