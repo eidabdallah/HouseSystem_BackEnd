@@ -10,8 +10,9 @@ const router = Router();
 
 router.use('/:id/room', roomRouter);
 router.post('/create', asyncHandler(validation(createHouseSchema)), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.createHouse));
-router.get('/allHouses', asyncHandler(auth(endPoints.student)), asyncHandler(controller.getAllHousesForStudents));
 router.get('/', asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.getHouseListForHouseOwner));
+router.get('/allHouses', asyncHandler(auth(endPoints.getallHouses)), asyncHandler(controller.getAllHousesForStudents));
+router.get('/:id', asyncHandler(auth(endPoints.getHouse)), asyncHandler(controller.getHouseDetails));
 router.patch('/:id', asyncHandler(validation(updateHouseInformationSchema)), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.updateHouseInformation));
 router.patch('/status/:id', asyncHandler(validation(updateHouseStatusSchema)), asyncHandler(auth(endPoints.houseOwner)), asyncHandler(controller.updateHouseStatus));
 router.delete('/:id', asyncHandler(validation(deleteHouseSchema)), asyncHandler(auth(endPoints.delete)), asyncHandler(controller.deleteHouse));
